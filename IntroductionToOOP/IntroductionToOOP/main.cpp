@@ -28,16 +28,22 @@ public:
 
 
 	//				 Constructors:
-	Point()
+	/*Point()
 	{
 		x = y = 0;
 		cout << "DefaultConstructor:\t" << this << endl;
-	}
+	}*/
 	Point(double x = 0, double y = 0)
 	{
 		this->x = x;
 		this->y = y;
 		cout << "Constructor:\t\t" << this << endl;
+	}
+	Point(const Point& other)
+	{
+		this->x = other.x;
+		this->y = other.y;
+		cout << "CopyConstructor:\t" << this << endl;
 	}
 	~Point()
 	{
@@ -45,7 +51,7 @@ public:
 	}
 
 	//					Methods:
-	double distance(Point other)
+	double distance(const Point& other)const
 	{
 		double x_distance = this->x - other.x;
 		double y_distance = this->y - other.y;
@@ -59,10 +65,11 @@ public:
 
 };
 
-double distance(Point A, Point B);
+double distance(const Point& A, const Point& B);
 
 //#define STRUCT_POINT
-//#define DISTANCE
+#define DISTANCE
+//#define CONSTRUCTORS_CHECK
 
 void main()
 {
@@ -91,29 +98,39 @@ void main()
 	B.set_x(4);
 	B.set_y(5);
 	//distance - возвращает расстояние до указанной точки
+	cout << "\n--------------------------------------\n";
 	cout << A.distance(B) << endl;
+	cout << "\n--------------------------------------\n";
 	cout << B.distance(A) << endl;
-	cout << endl;
+	cout << "\n--------------------------------------\n";
 	cout << distance(A, B) << endl;
+	cout << "\n--------------------------------------\n";
 	cout << distance(B, A) << endl;
+	cout << "\n--------------------------------------\n";
 
 #endif // DISTANCE
-
 	//for (int i = 0; i < 10; i++)
 	//{
 	//	cout << i << tab;
 	//}
 	//cout << endl;
+#ifdef CONSTRUCTORS_CHECK
 	Point A;		//Default constractor
 	A.print();
 	Point B(2, 3);
 	B.print();
+	Point C = B;
+	C.print();		//CopyConstructor
+	Point D(C);		//CopyConstructor
+	D.print();
 
 	//Point(); -	Конструктор класса Point
-	//~Point(); -	Деструктор класса Point
+	//~Point(); -	Деструктор класса Point  
+#endif // CONSCTRUCTORS_CHECK
+
 }
 
-double distance(Point A, Point B)
+double distance(const Point& A, const Point& B)
 {
 	//double x_distance = A.get_x() - B.get_x();
 	//double y_distance = A.get_y() - B.get_y();
