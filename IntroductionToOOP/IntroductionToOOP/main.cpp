@@ -1,7 +1,10 @@
 #include<iostream>
-using namespace std;
+using std::cin;
+using std::cout;
+using std::endl;
 
 #define tab "\t"
+#define delimiter "\n--------------------------------------\n"
 
 //Создание структуры:
 class Point
@@ -19,10 +22,14 @@ public:
 	}
 	void set_x(double x)
 	{
+		if (x < 0)x = 0;
+		if (x > 1000)x = 1000;
 		this->x = x;
 	}
 	void set_y(double y)
 	{
+		if (y < 0)y = 0;
+		if (y > 1000)y = 1000;
 		this->y = y;
 	}
 
@@ -50,6 +57,37 @@ public:
 		cout << "Destructor:\t\t" << this << endl;
 	}
 
+	//					Operators:
+	Point& operator=(const Point& other)
+	{
+		this->x = other.x;
+		this->y = other.y;
+		cout << "CopyAssignmnet:\t\t" << this << endl;
+		return *this;
+	}
+	Point& operator+=(const Point& other)
+	{
+		this->x += other.x;
+		this->y += other.y;
+		return *this;
+	}
+
+	//					Increment/Decrement
+
+	Point& operator++() //Prefix increment
+	{
+		this->x++;
+		this->y++;
+		return *this;
+	}
+	Point operator++(int) //Suffix increment
+	{
+		Point old = *this;
+		this->x++;
+		this->y++;
+		return old;
+	}
+
 	//					Methods:
 	double distance(const Point& other)const
 	{
@@ -65,11 +103,32 @@ public:
 
 };
 
+Point operator+(const Point& left, const Point& right)
+{
+	Point res;
+	res.set_x(left.get_x() + right.get_x());
+	res.set_y(left.get_y() + right.get_y());
+	return res;
+}
+Point operator-(const Point& left, const Point& right)
+{
+	Point res(left.get_x() - right.get_x(), left.get_y() - right.get_y());
+	return res;
+}
+
+bool operator==(const Point left, const Point right)
+{
+	if (left.get_x() == right.get_x() && left.get_y() == right.get_y())return true;
+	else return false;
+}
+
 double distance(const Point& A, const Point& B);
 
 //#define STRUCT_POINT
-#define DISTANCE
+//#define DISTANCE
 //#define CONSTRUCTORS_CHECK
+//#define ASSIGNMENT_CHECK
+//#define ARITHMETICAL_OPERATORS
 
 void main()
 {
@@ -97,6 +156,7 @@ void main()
 	Point B;
 	B.set_x(4);
 	B.set_y(5);
+	B.print();
 	//distance - возвращает расстояние до указанной точки
 	cout << "\n--------------------------------------\n";
 	cout << A.distance(B) << endl;
@@ -123,11 +183,55 @@ void main()
 	C.print();		//CopyConstructor
 	Point D(C);		//CopyConstructor
 	D.print();
+	Point E;		//Default constructor
+	E = C;			//CopyAssignmnet
+	E.print();
+	A = B;
+	A.print();
 
 	//Point(); -	Конструктор класса Point
 	//~Point(); -	Деструктор класса Point  
 #endif // CONSCTRUCTORS_CHECK
 
+#ifdef ASSIGNMENT_CHECK
+	int a, b, c;
+	a = b = c = 0;
+	Point A, B, C;
+	cout << delimiter << endl;
+	A = B = C = Point(15, 18);
+	cout << delimiter << endl;
+	A.print();
+	B.print();
+	C.print();
+
+#endif // ASSIGNMENT_CHECK
+
+#ifdef ARITHMETICAL_OPERATORS
+	Point A(2, 3);
+	Point B(3, 4);
+	A += B;
+	A.print();
+	Point C = A + B;
+	C.print();
+	C = A - B;
+	C.print();
+	Point D = C++;
+	C.print();
+	D.print();
+#endif // ARITHMETICAL_OPERATORS
+
+	Point A(2, 3);
+	//Point B(3, 4);
+	Point B = A;
+	//B++;
+	if (A == ++B)
+	{
+		cout << "Точки равны" << endl;
+	}
+	else
+	{
+		cout << "Точки разные" << endl;
+	}
 }
 
 double distance(const Point& A, const Point& B)
